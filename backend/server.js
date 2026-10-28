@@ -96,7 +96,7 @@ app.get("/api/search", async (req, res) => {
 
 app.get("/api/details/:type/:id", async (req, res) => {
   const type = ["movie", "tv"].includes(req.params.type) ? req.params.type : null;
-  if (!type || !/^\\d+$/.test(req.params.id)) return res.status(400).json({ error: "Tipo ou ID inválido." });
+  if (!type || !/^\d+$/.test(req.params.id)) return res.status(400).json({ error: "Tipo ou ID inválido." });
   try { res.json(await tmdb(`/${type}/${req.params.id}`, { append_to_response: "credits,videos,similar" })); }
   catch (error) { res.status(error.status || 502).json({ error: error.message || "Falha ao carregar detalhes." }); }
 });
