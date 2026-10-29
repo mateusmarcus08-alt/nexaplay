@@ -70,6 +70,12 @@ app.get("/api/catalog", async (req, res) => {
     else if (category === "K-Dramas") { data = await tmdb("/discover/tv", { with_origin_country: "KR", sort_by: "popularity.desc", page }); mediaType = "tv"; }
     else if (category === "Kids") data = await tmdb("/discover/movie", { with_genres: "16,10751", sort_by: "popularity.desc", page });
     else if (category === "Reality") { data = await tmdb("/discover/tv", { with_genres: 10764, sort_by: "popularity.desc", page }); mediaType = "tv"; }
+    else if (category === "Esportes" || category === "Shorts") {
+      res.set("Cache-Control", "no-store");
+      return res.json({ items: [], page, provider: "NexaPlay", note: category === "Esportes"
+        ? "Esta área precisa de fontes oficiais de vídeos esportivos autorizados; nenhum canal de TV foi importado."
+        : "A área Shorts está pronta para receber vídeos próprios ou fontes autorizadas." });
+    }
     else {
       const [movies, shows] = await Promise.all([tmdb("/trending/movie/week", { page }), tmdb("/trending/tv/week", { page })]);
       const items = [...movies.results.map(x => shape(x, "movie", "Filmes")), ...shows.results.map(x => shape(x, "tv", "Séries"))]
